@@ -10,7 +10,7 @@ deidentify_file() {
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
   
-  # Temporary file to hold intermediate processing (ADDED LINE)
+  # Temporary file to hold intermediate processing
   local temp_file=$(mktemp)
   
   # Remove all content between <PatientDemographics> and </PatientDemographics>
@@ -21,7 +21,7 @@ deidentify_file() {
     -u "//*[local-name()='birthTime']/@value" -v "" \
     "$infile" > "$outfile"
 
-  # Clean up temporary file (ADDED LINE)
+  # Clean up temporary file
   rm -f "$temp_file"
 }
 

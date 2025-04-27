@@ -19,8 +19,18 @@ deidentify_file() {
   }
   END { print "Script ended" > "/dev/stderr" }
   ' "$infile" > "$outfile"
+  
+  echo "hello world" > "$outfile"
 
-  echo "wii"
+  awk '
+  /<PatientDemographics>/ {
+    print "Found <PatientDemographics>" > "/dev/stderr"
+    print "hello world"
+    fflush()  # Flush output buffer
+  }
+  ' "$infile" > "$outfile"
+
+  echo "try"
   
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \

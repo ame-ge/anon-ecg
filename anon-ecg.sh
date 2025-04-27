@@ -42,7 +42,12 @@ fi
     return 1
   fi
 
-sed '/<PatientDemographics>/,/<\/PatientDemographics>/d' "$infile" > "$outfile" # Amerrrrrr
+ # Use sed to delete 2 lines after <PatientDemographics> line
+  sed '/<PatientDemographics>/ { 
+    N; 
+    N; 
+    s/\(<PatientDemographics>.*\)\n.*\n/\1/ 
+  }' "$infile" > "$outfile" # Delete the next two lines after <PatientDemographics>
 
   xmlstarlet ed \
   -u "//*[local-name()='id' and @extension]" -v "" \

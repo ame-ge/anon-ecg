@@ -10,23 +10,24 @@ deidentify_file() {
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
 
-  echo "ameee"
-
-  # Process the file with AWK: Remove content between <PatientDemographics> and </PatientDemographics>
+  # Process the file with AWK: Delete the line immediately after <PatientDemographics>
   awk '
   BEGIN { print "Script started" > "/dev/stderr" }
-  
-  # Flag to indicate we're inside <PatientDemographics> block
-  /<PatientDemographics>/ { inside=1; print "Found <PatientDemographics>" > "/dev/stderr"; next }
-  /<\/PatientDemographics>/ { inside=0; next }
 
-  # Print lines outside <PatientDemographics> block
-  !inside { print $0 }
+  # Flag to indicate we're inside <PatientDemographics> block
+  /<PatientDemographics>/ { 
+    print $0                # Print <PatientDemographics>
+    getline                 # Skip the next line
+    next                    # Move to the next line
+  }
+
+  # Print all other lines
+  { print $0 }
 
   END { print "Script ended" > "/dev/stderr" }
   ' "$infile" > "$outfile"
 
-  # Modify XML with xmlstarlet (if needed, depending on further processing)
+  # Modify XML with xmlstarlet (if needed)
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \
     -u "//*[local-name()='birthTime']/@value" -v "" \

@@ -13,7 +13,7 @@ deidentify_file() {
   awk '
   BEGIN { in_patient_demo = 0 }
   {
-    print "Processing line: " $0 > "/dev/stderr" # Debug output
+    print "Processing line " $0 > "/dev/stderr" # Debug output
   }
   /<PatientDemographics>/ {
     print "Found <PatientDemographics>" > "/dev/stderr" # Debug output

@@ -13,8 +13,9 @@ deidentify_file() {
   awk '
   /<PatientDemographics>/ {
     print "Found <PatientDemographics>" > "/dev/stderr"  # Debug
+    print "hello world" > "/dev/stderr"  # Debug
     print $0
-    print "hello worldddd"
+    print "hello world"
   }
   ' "$infile" > "$outfile"
   

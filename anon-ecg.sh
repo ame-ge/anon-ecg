@@ -10,23 +10,15 @@ deidentify_file() {
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
   
-  # Temporary file to hold intermediate processing
-  local temp_file=$(mktemp)
-  
   # Remove all content between <PatientDemographics> and </PatientDemographics>, keeping the tags
   sed '/<PatientDemographics>/,/<\/PatientDemographics>/ {
-    /<PatientDemographics>/b
-    /<\/PatientDemographics>/b
-    d
-  }' "$infile" > "$temp_file"
+    /<PatientDemographics>/!{/<\/PatientDemographics>/!d}
+  }' "$infile" > "$outfile"
 
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \
     -u "//*[local-name()='birthTime']/@value" -v "" \
     "$infile" > "$outfile"
-
-  # Clean up temporary file
-  rm -f "$temp_file"
 }
 
 # Function to loop through all XML files in the input directory

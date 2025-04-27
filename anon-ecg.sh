@@ -10,12 +10,24 @@ deidentify_file() {
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
   
-  # Remove all content between <PatientDemographics> and </PatientDemographics>, keeping the tags
-  sed '/<PatientDemographics>/,/<\/PatientDemographics>/ {
-    /<PatientDemographics>/!{/<\/PatientDemographics>/!d}
-  }' "$infile" > "$outfile"
+# Process the file using awk
+  awk '
+  BEGIN { in_patient_demo = 0 }
+  /<PatientDemographics>/ {
+    print $0
+    print "hello world"
+    in_patient_demo = 1
+    next
+  }
+  /<\/PatientDemographics>/ {
+    print $0
+    in_patient_demo = 0
+    next
+  }
+  !in_patient_demo { print $0 }
+  ' "$infile" > "$outfile"
   
-  echo "Ame"
+  echo "Ame2"
   
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \

@@ -10,6 +10,8 @@ deidentify_file() {
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
 
+  echo "ameee"
+
   # Process the file with AWK: Remove content between <PatientDemographics> and </PatientDemographics>
   awk '
   BEGIN { print "Script started" > "/dev/stderr" }

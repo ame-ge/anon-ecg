@@ -42,7 +42,7 @@ deidentify_directory() {
   local outdir="$2"
 
   # Create output directory if it doesn't exist
-  mkdir -p "$outdir"
+  mkdir -p "$outdir" || { echo "Error: Could not create output directory."; exit 1; }
 
   shopt -s nullglob
   for file in "$indir"/*.xml; do

@@ -13,8 +13,12 @@ deidentify_file() {
   # Temporary file to hold intermediate processing
   local temp_file=$(mktemp)
   
-  # Remove all content between <PatientDemographics> and </PatientDemographics>
-  sed '/<PatientDemographics>/,/<\/PatientDemographics>/d' "$infile" > "$temp_file"
+  # Remove all content between <PatientDemographics> and </PatientDemographics>, keeping the tags
+  sed '/<PatientDemographics>/,/<\/PatientDemographics>/ {
+    /<PatientDemographics>/b
+    /<\/PatientDemographics>/b
+    d
+  }' "$infile" > "$temp_file"
 
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \

@@ -17,7 +17,7 @@ deidentify_file() {
   # Flag to indicate we're inside <PatientDemographics> block
   /<PatientDemographics>/ { 
     print $0                # Print <PatientDemographics>
-    getline                 # Skip the next line
+    getline                 # Skip the next lineeee
     next                    # Move to the next line
   }
 

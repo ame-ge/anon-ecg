@@ -15,7 +15,7 @@ deidentify_file() {
   -u "//*[local-name()='birthTime']/@value" -v "" \
   "$infile" > "${outfile}.tmp"
   
-  # Remove the line containing <PatientID> from the temporary file
+  # Remove PHIs
   sed '/<PatientID>/d;/<PatientLastName>/d;/<PatientFirstName>/d;/<HISAccountNumber>/d;/<ExtraADTData1>/d' "${outfile}.tmp" > "${outfile}"
 
   # Clean up temporary file

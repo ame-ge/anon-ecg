@@ -10,21 +10,28 @@ deidentify_file() {
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
   
-# Process the file using awk
   awk '
   BEGIN { in_patient_demo = 0 }
+  {
+    print "Processing line: " $0 > "/dev/stderr" # Debug output
+  }
   /<PatientDemographics>/ {
+    print "Found <PatientDemographics>" > "/dev/stderr" # Debug output
     print $0
     print "hello world"
     in_patient_demo = 1
     next
   }
   /<\/PatientDemographics>/ {
+    print "Found </PatientDemographics>" > "/dev/stderr" # Debug output
     print $0
     in_patient_demo = 0
     next
   }
-  !in_patient_demo { print $0 }
+  !in_patient_demo {
+    print "Outside <PatientDemographics> block" > "/dev/stderr" # Debug output
+    print $0
+  }
   ' "$infile" > "$outfile"
   
   echo "Ame2"

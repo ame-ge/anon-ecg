@@ -9,7 +9,10 @@ deidentify_file() {
 
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
-
+  
+  # Temporary file to hold intermediate processing (ADDED LINE)
+  local temp_file=$(mktemp)
+  
   # Remove all content between <PatientDemographics> and </PatientDemographics>
   sed '/<PatientDemographics>/,/<\/PatientDemographics>/d' "$infile" > "$temp_file"
 
@@ -17,6 +20,9 @@ deidentify_file() {
     -u "//*[local-name()='id' and @extension]" -v "" \
     -u "//*[local-name()='birthTime']/@value" -v "" \
     "$infile" > "$outfile"
+
+  # Clean up temporary file (ADDED LINE)
+  rm -f "$temp_file"
 }
 
 # Function to loop through all XML files in the input directory

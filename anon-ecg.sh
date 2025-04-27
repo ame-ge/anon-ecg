@@ -10,6 +10,9 @@ deidentify_file() {
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
 
+  # Remove all content between <PatientDemographics> and </PatientDemographics>
+  sed '/<PatientDemographics>/,/<\/PatientDemographics>/d' "$infile" > "$temp_file"
+
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \
     -u "//*[local-name()='birthTime']/@value" -v "" \

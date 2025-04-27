@@ -27,12 +27,22 @@ deidentify_file() {
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
 
+
+# Check write access before proceeding
+check_write_access "$infile"
+if [ $? -ne 0 ]; then
+  echo "Skipping file due to write access error: $infile"
+  return 1
+fi
+
 # Check write access before proceeding inserted by ame
   check_write_access "$infile"
   if [ $? -ne 0 ]; then
     echo "Skipping file due to write access error: $infile"
     return 1
   fi
+
+sed '/<PatientDemographics>/,/<\/PatientDemographics>/d' "$infile" > "$outfile" # Ame
 
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \

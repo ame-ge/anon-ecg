@@ -14,11 +14,9 @@ deidentify_file() {
   /<PatientDemographics>/ {
     print "Found <PatientDemographics>" > "/dev/stderr"  # Debug
     print $0
-    print "hello world"
+    print "hello worldddd"
   }
   ' "$infile" > "$outfile"
-  
-  echo "Ame3"
   
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \

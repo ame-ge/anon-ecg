@@ -10,31 +10,9 @@ deidentify_file() {
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
   
-  awk '
-  BEGIN { in_patient_demo = 0 }
-  {
-    print "Processing line " $0 > "/dev/stderr" # Debug output
-  }
-  /<PatientDemographics>/ {
-    print "Found <PatientDemographics>" > "/dev/stderr" # Debug output
-    print $0
-    print "hello world"
-    in_patient_demo = 1
-    next
-  }
-  /<\/PatientDemographics>/ {
-    print "Found </PatientDemographics>" > "/dev/stderr" # Debug output
-    print $0
-    in_patient_demo = 0
-    next
-  }
-  !in_patient_demo {
-    print "Outside <PatientDemographics> block" > "/dev/stderr" # Debug output
-    print $0
-  }
-  ' "$infile" > "$outfile"
+  awk '{ print "Processing line: " $0 > "/dev/stderr" }' "$infile"
   
-  echo "Ame2"
+  echo "Ame3"
   
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \

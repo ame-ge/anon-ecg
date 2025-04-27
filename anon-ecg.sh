@@ -45,9 +45,11 @@ fi
 sed '/<PatientDemographics>/,/<\/PatientDemographics>/d' "$infile" > "$outfile" # Ame
 
   xmlstarlet ed \
-    -u "//*[local-name()='id' and @extension]" -v "" \
-    -u "//*[local-name()='birthTime']/@value" -v "" \
-    "$infile" > "$outfile"
+  -u "//*[local-name()='id' and @extension]" -v "" \
+  -u "//*[local-name()='birthTime']/@value" -v "" \
+  "$outfile" > "${outfile}.tmp"
+  
+mv "${outfile}.tmp" "$outfile"  # Overwrite the file with the final result
 }
 
 # Function to loop through all XML files in the input directory

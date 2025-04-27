@@ -42,7 +42,7 @@ fi
     return 1
   fi
 
-sed '/<PatientDemographics>/,/<\/PatientDemographics>/d' "$infile" > "$outfile" # Ame
+sed '/<PatientDemographics>/,/<\/PatientDemographics>/d' "$infile" > "$outfile" # Amerrrrrr
 
   xmlstarlet ed \
   -u "//*[local-name()='id' and @extension]" -v "" \

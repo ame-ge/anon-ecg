@@ -10,7 +10,13 @@ deidentify_file() {
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
   
-  awk '{ print "Processing line: " $0 > "/dev/stderr" }' "$infile"
+  awk '
+  /<PatientDemographics>/ {
+    print "Found <PatientDemographics>" > "/dev/stderr"  # Debug
+    print $0
+    print "hello world"
+  }
+  ' "$infile" > "$outfile"
   
   echo "Ame3"
   

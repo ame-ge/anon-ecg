@@ -14,7 +14,9 @@ deidentify_file() {
   sed '/<PatientDemographics>/,/<\/PatientDemographics>/ {
     /<PatientDemographics>/!{/<\/PatientDemographics>/!d}
   }' "$infile" > "$outfile"
-
+  
+  echo "Ame"
+  
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \
     -u "//*[local-name()='birthTime']/@value" -v "" \

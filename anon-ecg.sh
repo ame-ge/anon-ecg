@@ -10,30 +10,10 @@ deidentify_file() {
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
 
-  # Process the file with AWK: Delete the line immediately after <PatientDemographics>
-  awk '
-  BEGIN { print "Script started" > "/dev/stderr" }
-
-  # Flag to indicate we're inside <PatientDemographics> block
-  /<PatientDemographics>/ { 
-    print $0                # Print <PatientDemographics>
-    getline                 # Skip the next lineeee
-    next                    # Move to the next line
-  }
-
-  # Print all other lines
-  { print $0 }
-
-  END { print "Script ended" > "/dev/stderr" }
-  ' "$infile" > "$outfile"
-
-  # Modify XML with xmlstarlet (if needed)
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \
     -u "//*[local-name()='birthTime']/@value" -v "" \
-    "$infile" >> "$outfile"  # Append xmlstarlet result to outfile
-
-  echo "Finished processing $infile"
+    "$infile" > "$outfile"
 }
 
 # Function to loop through all XML files in the input directory
@@ -42,7 +22,7 @@ deidentify_directory() {
   local outdir="$2"
 
   # Create output directory if it doesn't exist
-  mkdir -p "$outdir" || { echo "Error: Could not create output directory."; exit 1; }
+  mkdir -p "$outdir"
 
   shopt -s nullglob
   for file in "$indir"/*.xml; do

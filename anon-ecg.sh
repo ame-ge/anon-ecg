@@ -10,6 +10,7 @@ deidentify_file() {
   echo "De-identifying: $infile"
   echo "Saving to: $outfile"
   
+  # Start by processing the file with AWK
   awk '
   BEGIN { print "Script started" > "/dev/stderr" }
   /<PatientDemographics>/ {
@@ -19,23 +20,14 @@ deidentify_file() {
   }
   END { print "Script ended" > "/dev/stderr" }
   ' "$infile" > "$outfile"
-  
-  echo "hello world" > "$outfile"
 
-  awk '
-  /<PatientDemographics>/ {
-    print "Found <PatientDemographics>" > "/dev/stderr"
-    print "hello world"
-    fflush()  # Flush output buffer
-  }
-  ' "$infile" > "$outfile"
-
-  echo "try"
-  
+  # Modify XML with xmlstarlet
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \
     -u "//*[local-name()='birthTime']/@value" -v "" \
-    "$infile" > "$outfile"
+    "$infile" >> "$outfile"  # Append xmlstarlet result to outfile
+
+  echo "Finished processing $infile"
 }
 
 # Function to loop through all XML files in the input directory

@@ -18,6 +18,8 @@ deidentify_file() {
     print "hello world"
   }
   ' "$infile" > "$outfile"
+
+  echo "aaa"
   
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \

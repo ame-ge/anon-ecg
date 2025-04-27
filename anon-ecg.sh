@@ -11,15 +11,16 @@ deidentify_file() {
   echo "Saving to: $outfile"
   
   awk '
+  BEGIN { print "Script started" > "/dev/stderr" }
   /<PatientDemographics>/ {
-    print "Found <PatientDemographics>" > "/dev/stderr"  # Debug
-    print "hello world" > "/dev/stderr"  # Debug
+    print "Found <PatientDemographics>" > "/dev/stderr"
     print $0
     print "hello world"
   }
+  END { print "Script ended" > "/dev/stderr" }
   ' "$infile" > "$outfile"
 
-  echo "aaa"
+  echo "wii"
   
   xmlstarlet ed \
     -u "//*[local-name()='id' and @extension]" -v "" \

@@ -21,20 +21,24 @@ deidentify_file() {
   # Clean up temporary file
   rm -f "${outfile}.tmp"
 
-  # Extract values using sed instead of grep -P (for macOS compatibility)
-    fname_initial=$(sed -n 's:.*<PatientFirstName>\([A-Za-z]\).*:</PatientFirstName>.*:\1:p' "$infile")
-    echo "fnamees $infile   "
-    lname_initial=$(sed -n 's:.*<PatientLastName>\([A-Za-z]\).*:</PatientLastName>.*:\1:p' "$infile")
-    date=$(sed -n 's:.*<AcquisitionDate>\([0-9]\{2\}-[0-9]\{2\}-[0-9]\{4\}\)</AcquisitionDate>.*:\1:p' "$infile")
-    time=$(sed -n 's:.*<AcquisitionTime>\([0-9]\{2\}:[0-9]\{2\}\):.*:\1:p' "$infile" | tr -d ':')
-  
-    if [[ -n "$fname_initial" && -n "$lname_initial" && -n "$date" && -n "$time" ]]; then
-      newname="${fname_initial^^}${lname_initial^^}_${date}_${time}.xml"
-      mv "$outfile" "$outdir/$newname"
-      echo "Renamed to: $newname"
-    else
-      echo "Warning: Missing tag for renaming in $infile"
-    fi
+  # Extract values using portable sed syntax (BSD/macOS friendly)
+
+  fname_initial=$(sed -n 's/.*<PatientFirstName>\([A-Za-z]\).*/\1/p' "$infile")
+  echo "isthisworking $infile "
+  lname_initial=$(sed -n 's/.*<PatientLastName>\([A-Za-z]\).*/\1/p' "$infile")
+  date=$(sed -n 's/.*<AcquisitionDate>\([0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]\).*/\1/p' "$infile")
+  time=$(sed -n 's/.*<AcquisitionTime>\([0-9][0-9]:[0-9][0-9]\).*/\1/p' "$infile" | tr -d ':')
+
+  if [[ -n "$fname_initial" && -n "$lname_initial" && -n "$date" && -n "$time" ]]; then
+    # Convert initials to uppercase (works in Bash 4+)
+    fname_initial=$(echo "$fname_initial" | tr '[:lower:]' '[:upper:]')
+    lname_initial=$(echo "$lname_initial" | tr '[:lower:]' '[:upper:]')
+    newname="${fname_initial}${lname_initial}_${date}_${time}.xml"
+    mv "$outfile" "$outdir/$newname"
+    echo "Renamed to: $newname"
+  else
+    echo "Warning: Missing tag for renaming in $infile"
+  fi
 
 mv "${outfile}.tmp" "$outfile"  # Overwrite the file with the final result
 }

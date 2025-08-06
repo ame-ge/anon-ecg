@@ -20,7 +20,21 @@ deidentify_file() {
 
   # Clean up temporary file
   rm -f "${outfile}.tmp"
-  
+
+  # Extract values for renaming
+  fname_initial=$(grep -oPm1 "(?<=<PatientFirstName>)[A-Za-z]" "$infile")
+  lname_initial=$(grep -oPm1 "(?<=<PatientLastName>)[A-Za-z]" "$infile")
+  date=$(grep -oPm1 "(?<=<AcquisitionDate>)[0-9]{2}-[0-9]{2}-[0-9]{4}" "$infile")
+  time=$(grep -oPm1 "(?<=<AcquisitionTime>)[0-9]{2}:[0-9]{2}" "$infile" | tr -d ':')
+
+  if [[ -n "$fname_initial" && -n "$lname_initial" && -n "$date" && -n "$time" ]]; then
+    newname="${fname_initial^^}${lname_initial^^}_${date}_${time}.xml"
+    mv "$outfile" "$outdir/$newname"
+    echo "Renamed to: $newname"
+  else
+    echo "Warning: Missing tag for renaming in $infile"
+  fi
+
 mv "${outfile}.tmp" "$outfile"  # Overwrite the file with the final result
 }
 

@@ -23,6 +23,7 @@ deidentify_file() {
 
   # Extract values for renaming
   fname_initial=$(grep -oPm1 "(?<=<PatientFirstName>)[A-Za-z]" "$infile")
+  echo "fnameeee $infile"
   lname_initial=$(grep -oPm1 "(?<=<PatientLastName>)[A-Za-z]" "$infile")
   date=$(grep -oPm1 "(?<=<AcquisitionDate>)[0-9]{2}-[0-9]{2}-[0-9]{4}" "$infile")
   time=$(grep -oPm1 "(?<=<AcquisitionTime>)[0-9]{2}:[0-9]{2}" "$infile" | tr -d ':')
